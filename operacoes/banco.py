@@ -2,12 +2,48 @@ from entidades.cliente import Cliente
 from entidades.conta import Conta, ContaCorrente, ContaPoupanca
 
 class Banco():
-    def __init__(self, nome: str):
-        self.nome = nome
-        self.contas = {}
-        self.clientes = {}
+    def __init__(self, nome_banco: str):
+        self.nome_banco = nome_banco
+        self._contas = {}
+        self._clientes = {}
 
-    def cadastro_cliente(self, nome: str, cpf: str) -> Cliente:
-        if cpf in self.clientes:
+    def cadastro_cliente(self, nome: str, endereco: str, cpf: str) -> Cliente:
+
+        # Verificando se já existe cadastro do cliente;
+        if cpf in self._clientes:
             print("ERRO! Cliente com CPF já cadastrado.")
-            return self.clientes[cpf]
+            return self._clientes[cpf]
+
+        # Criando cadastro do cliente;
+        novo_cliente = Cliente(nome, endereco, cpf)
+        self._clientes[cpf] = novo_cliente
+
+        print(f"Cliente {nome} cadastrado com sucesso.")
+
+        return novo_cliente
+
+    def criar_conta(self, cliente: Cliente, tipo: str):
+
+        # Criando numero da conta;
+        numero_conta = Conta._total_contas + 1
+
+        # Criando conta corrente;
+        if tipo.lower() == "corrente":
+            nova_conta = ContaCorrente(numero_conta, cliente)
+
+        # Criando conta poupança
+        elif tipo.lower() == "poupança":
+            nova_conta = ContaPoupanca(numero_conta, cliente)
+
+        else:
+            print("Tipo de conta não existe.")
+            return None
+
+        # Adiciona a nova conta ao dicionário de contas
+        self._contas[numero_conta] = nova_conta
+
+        # Associa a conta ao cliente
+        cliente.adicionar_conta(nova_conta)
+        print(f"Conta {tipo}, numero {numero_conta} criada para {cliente.nome} com sucesso.")
+
+        return nova_conta
