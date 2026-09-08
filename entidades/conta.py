@@ -4,9 +4,9 @@ class Conta(ABC):
 
     _total_contas = 0
 
-    def __init__(self, numero, cliente):
-        self._numero = numero
-        self._cliente = cliente
+    def __init__(self, numero: int, cliente: str):
+        self.numero = numero
+        self.cliente = cliente
         self._saldo = 0.0
         self._historico = []
         Conta._total_contas +=1
@@ -19,7 +19,7 @@ class Conta(ABC):
             print("Depósito efetuado com sucesso.")
 
     @abstractmethod
-    def sacar(self, valor):
+    def sacar(self, valor: int):
         pass
 
     def ver_saldo(self):
@@ -30,8 +30,9 @@ class Conta(ABC):
 
 
 class ContaPoupanca(Conta):
-    def __init__(self, numero, cliente):
+    def __init__(self, numero: int, cliente):
         super().__init__(numero, cliente)
+        self.tipo = "Poupança"
 
     def sacar(self, valor):
         if valor > self._saldo:
@@ -41,11 +42,12 @@ class ContaPoupanca(Conta):
             print("Saque efetuado com sucesso.")
 
 class ContaCorrente(Conta):
-    def __init__(self, numero, cliente, chequeEspecial = 500):
+    def __init__(self, numero: int, cliente: str, chequeEspecial = 500):
         self.limite = chequeEspecial
         super().__init__(numero, cliente)
+        self.tipo = "Corrente"
 
-    def sacar(self, valor):
+    def sacar(self, valor: int):
         if valor <= self._saldo + self.limite:
             self._saldo -= valor
         else:
